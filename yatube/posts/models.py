@@ -28,13 +28,13 @@ class Post(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name="posts",
-        )
+    )
     group = models.ForeignKey(
         Group,
         models.SET_NULL,
         blank=True, null=True,
         related_name="posts",
-        )
+    )
     image = models.ImageField(
         'Картинка',
         upload_to='posts/',
