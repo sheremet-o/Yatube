@@ -80,7 +80,27 @@ class TestFollow:
         assert response.status_code != 404, f'Страница `{str_url}` не найдена, проверьте этот адрес в *urls.py*'
         return response
 
+    @pytest.mark.django_db(transaction=True)
+    def test_follow_not_auth(self, client, user):
+        response = self.check_url(client, '/follow', '/follow/')
+        if not(response.status_code in (301, 302) and response.url.startswith('/auth/login')):
+            assert False, (
+                'Проверьте, что не авторизованного пользователя `/follow/` отправляет на страницу авторизации'
+            )
 
+        response = self.check_url(client, f'/profile/{user.username}/follow', '/profile/<username>/follow/')
+        if not(response.status_code in (301, 302) and response.url.startswith('/auth/login')):
+            assert False, (
+                'Проверьте, что не авторизованного пользователя `profile/<username>/follow/` '
+                'отправляете на страницу авторизации'
+            )
+
+        response = self.check_url(client, f'/profile/{user.username}/unfollow', '/profile/<username>/unfollow/')
+        if not(response.status_code in (301, 302) and response.url.startswith('/auth/login')):
+            assert False, (
+                'Проверьте, что не авторизованного пользователя `profile/<username>/unfollow/` '
+                'отправляете на страницу авторизации'
+            )
 
     @pytest.mark.django_db(transaction=True)
     def test_follow_auth(self, user_client, user, post):
