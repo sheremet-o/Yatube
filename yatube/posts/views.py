@@ -5,6 +5,7 @@ from .forms import PostForm, CommentForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_page
 
+
 PAGE_PER_LIST = 10
 
 
