@@ -38,15 +38,12 @@ def group_posts(request, slug):
 def profile(request, username):
     profile_name = get_object_or_404(User, username=username)
     posts = Post.objects.filter(author=profile_name)
-    post_count = Post.objects.filter(author=profile_name).count()
+    post_count = posts.count()
     paginator = Paginator(posts, PAGE_PER_LIST)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    following = False
-    if ((request.user.is_authenticated)
-        and Follow.objects.filter(
-            user=request.user, author=profile_name).exists()):
-        following = True
+    following = request.user.is_authenticated and Follow.objects.filter(
+        user=request.user, author=profile_name).exists()
     context = {
         'page_obj': page_obj,
         'profile_name': profile_name,
@@ -57,7 +54,7 @@ def profile(request, username):
 
 
 def post_detail(request, post_id):
-    post_number = Post.objects.get(pk=post_id)
+    post_number = get_object_or_404(Post, pk=post_id)
     post_count = Post.objects.filter(author=post_number.author).count()
     post_title = post_number.text[:30]
     comments = Comment.objects.filter(post_id=post_id)
@@ -91,9 +88,8 @@ def post_edit(request, post_id):
     form = PostForm(request.POST or None,
                     files=request.FILES or None,
                     instance=post)
-    is_edit = 'is_edit'
     context = {
-        'is_edit': is_edit,
+        'is_edit': True,
         'form': form,
         'post': post}
     if not form.is_valid():
@@ -130,7 +126,7 @@ def profile_follow(request, username):
 @login_required
 def profile_unfollow(request, username):
     author = get_object_or_404(User, username=username)
-    Follow.objects.get(user=request.user, author=author).delete()
+    get_object_or_404(Follow, user=request.user, author=author).delete()
     return render(request, 'posts/index.html')
 
 

@@ -46,17 +46,17 @@ class PostURLTests(TestCase):
 
     def test_group_list_url_exists_at_desired_location(self):
         '''Страница /group/<slug>/ доступна любому пользователю.'''
-        response = self.guest_client.get('/group/test-slug/')
+        response = self.guest_client.get(f'/group/{self.group.slug}/')
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_profile_url_exists_at_desired_location(self):
         '''Страница /profile/<username>/ доступна любому пользователю.'''
-        response = self.guest_client.get('/profile/HasNoName/')
+        response = self.guest_client.get(f'/profile/{self.user.username}/')
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_post_detail_url_exists_at_desired_location(self):
         '''Страница /posts/<post_id>/ доступна любому пользователю.'''
-        response = self.guest_client.get('/posts/1/')
+        response = self.guest_client.get(f'/posts/{self.post.pk}/')
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
 # Проверяем доступность страниц для авторизованного пользователя
@@ -97,9 +97,9 @@ class PostURLTests(TestCase):
     def test_urls_uses_correct_template(self):
         '''URL-адрес использует соответствующий шаблон.'''
         template_urls_names = {
-            'posts/group_list.html': '/group/test-slug/',
-            'posts/profile.html': '/profile/HasNoName/',
-            'posts/post_detail.html': '/posts/1/'}
+            'posts/group_list.html': f'/group/{self.group.slug}/',
+            'posts/profile.html': f'/profile/{self.user.username}/',
+            'posts/post_detail.html': f'/posts/{self.post.pk}/'}
 
         for template, address in template_urls_names.items():
             with self.subTest(address=address):

@@ -1,6 +1,5 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
-from django.test import Client, TestCase
 from django.urls import reverse
 
 from posts.models import Group, Post
@@ -23,11 +22,11 @@ class PaginatorViewsTest(TestCase):
             author=cls.user,
             group=cls.group,
         )
-        for i in range(1, 13):
-            cls.post = Post.objects.create(
-                text=f'Тестовый текст номер {i}',
-                author=cls.user,
-                group=cls.group)
+        cls.posts = Post.objects.bulk_create([
+            Post(text=f'Тестовый текст номер {i}',
+                 author=cls.user,
+                 group=cls.group)
+            for i in range(1, 13)])
 
     def setUp(self):
         self.guest_client = Client()
