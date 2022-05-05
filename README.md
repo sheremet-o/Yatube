@@ -1,5 +1,7 @@
 # Yatube project
 
-## Описание
+## Description
 
-Учебный проект - создание портала для блогеров. 
+Sample blog to learn to use Django framework options.
+
+https://pythonplayground.pythonanywhere.com/
